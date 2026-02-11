@@ -1,0 +1,22 @@
+@{
+    ViewData["Title"] = "Re-sign Complete";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-success text-white">
+            <h2 class="mb-0">? Re-signature Complete</h2>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-success">
+                <h4>@ViewData["Message"]</h4>
+            </div>
+            <p>All users have been re-signed with the persistent RSA key.</p>
+            <p>You can now login and the integrity check should show as valid.</p>
+        </div>
+        <div class="card-footer">
+            <a href="/" class="btn btn-primary">Back to Home</a>
+            <a href="/Account/Login" class="btn btn-secondary">Login</a>
+        </div>
+    </div>
+</div>

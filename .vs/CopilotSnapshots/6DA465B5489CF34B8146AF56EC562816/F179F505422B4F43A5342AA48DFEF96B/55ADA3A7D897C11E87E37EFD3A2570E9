@@ -1,0 +1,16 @@
+﻿{
+  "ConnectionStrings": {
+    "AuthConnectionString": "Server=(localdb)\\mssqllocaldb;Database=FreshFarmMarketDB;Trusted_Connection=True;MultipleActiveResultSets=true"
+  },
+  "ReCaptcha": {
+    "SiteKey": "PASTE_YOUR_SITE_KEY_HERE",
+    "SecretKey": "PASTE_YOUR_SECRET_KEY_HERE"
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*"
+}

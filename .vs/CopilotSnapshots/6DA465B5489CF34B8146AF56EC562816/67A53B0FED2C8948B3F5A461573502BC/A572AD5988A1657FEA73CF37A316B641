@@ -1,0 +1,56 @@
+﻿using AppSecAssignment.Models;
+using Microsoft.EntityFrameworkCore;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// ==============================
+// 1. Add Services to the Container
+// ==============================
+
+builder.Services.AddControllersWithViews();
+
+// Add the Database Context (Connects to SQL)
+builder.Services.AddDbContext<AuthDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AuthConnectionString")));
+
+// Add Session Services (Needed for Login/Logout)
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddDistributedMemoryCache(); // Saves session in memory
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromSeconds(600); // 10 minutes timeout
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
+var app = builder.Build();
+
+// ==============================
+// 2. Configure the HTTP Request Pipeline
+// ==============================
+
+// Configure the HTTP request pipeline.
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+}
+
+// Add this line to handle 404 errors (Page Not Found)
+app.UseStatusCodePagesWithReExecute("/Home/Error/{0}");
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+// Important: Session must be called BEFORE Routing
+app.UseSession();
+
+app.UseRouting();
+
+app.UseAuthorization();
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.Run();

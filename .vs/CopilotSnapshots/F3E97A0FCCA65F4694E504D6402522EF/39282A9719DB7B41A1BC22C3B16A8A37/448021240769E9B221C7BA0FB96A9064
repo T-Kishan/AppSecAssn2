@@ -1,0 +1,63 @@
+﻿using AppSecAssignment.Models;
+using AppSecAssignment.Services; // Ensure this is added for DigitalSignature
+using Microsoft.AspNetCore.Mvc;
+
+namespace AppSecAssignment.Controllers
+{
+    public class HomeController : Controller
+    {
+        private readonly AuthDbContext _context;
+
+        public HomeController(AuthDbContext context)
+        {
+            _context = context;
+        }
+
+        public IActionResult Index()
+        {
+            var userEmail = HttpContext.Session.GetString("UserEmail");
+
+            if (string.IsNullOrEmpty(userEmail))
+            {
+                return View();
+            }
+
+            var user = _context.Users.FirstOrDefault(u => u.Email == userEmail);
+
+            // SECURITY: RSA Integrity Check
+            // We verify that the 'AboutMe' text in the database matches the signature.
+            if (user != null && !string.IsNullOrEmpty(user.AboutMeSignature))
+            {
+                bool isIntegrityValid = DigitalSignature.VerifyData(user.AboutMe, user.AboutMeSignature);
+
+                if (!isIntegrityValid)
+                {
+                    ViewData["IntegrityCheck"] = "WARNING: Data corruption detected! Profile data has been tampered with.";
+                    ViewData["IntegrityClass"] = "alert-danger";
+                }
+                else
+                {
+                    ViewData["IntegrityCheck"] = "Data Integrity Verified (RSA Signature Valid).";
+                    ViewData["IntegrityClass"] = "alert-success";
+                }
+            }
+
+            return View(user);
+        }
+
+        public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        [Route("Home/Error/{statusCode}")]
+        public IActionResult Error(int statusCode)
+        {
+            if (statusCode == 404)
+            {
+                return View("Error");
+            }
+            return View("Error");
+        }
+    }
+}

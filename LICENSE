@@ -1,0 +1,45 @@
+ACADEMIC PROJECT LICENSE
+
+Copyright (c) 2025 T-Kishan
+
+This project is created for educational purposes as part of an Application Security course assignment.
+
+TERMS AND CONDITIONS:
+
+1. EDUCATIONAL USE ONLY
+   This software is provided for academic and educational purposes only.
+
+2. NO COMMERCIAL USE
+   This software may not be used for commercial purposes without explicit written permission.
+
+3. ATTRIBUTION
+   If you reference or use any part of this code for educational purposes, proper attribution must be given.
+
+4. NO WARRANTY
+   This software is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement.
+
+5. SECURITY NOTICE
+   This application contains hardcoded encryption keys and is designed for demonstration purposes only. Do not use in production environments without implementing proper key management (Azure Key Vault, etc.).
+
+6. ACADEMIC INTEGRITY
+   This code is submitted as original work. Any use of this code by other students may constitute academic dishonesty under your institution's policies.
+
+For questions or permissions, contact the author via GitHub: https://github.com/T-Kishan
+
+---
+
+THIRD-PARTY NOTICES:
+
+This project uses the following third-party libraries:
+- .NET 9.0 (Microsoft) - MIT License
+- Entity Framework Core (Microsoft) - MIT License  
+- Bootstrap 5 (Twitter, Inc.) - MIT License
+- jQuery (OpenJS Foundation) - MIT License
+- Google reCAPTCHA (Google LLC) - Terms of Service apply
+
+---
+
+Institution: [Your Institution Name]
+Course: Application Security
+Semester: Semester 2, 2025
+Assignment: Fresh Farm Market - Secure Web Application

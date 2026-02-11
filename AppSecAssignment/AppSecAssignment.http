@@ -1,0 +1,6 @@
+@AppSecAssignment_HostAddress = http://localhost:5199
+
+GET {{AppSecAssignment_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
