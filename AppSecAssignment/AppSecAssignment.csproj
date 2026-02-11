@@ -14,6 +14,7 @@
     <!-- Security Analysis -->
     <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
     <RunAnalyzersDuringLiveAnalysis>true</RunAnalyzersDuringLiveAnalysis>
+    <UserSecretsId>b3deb1c9-6806-41dc-a056-89c7b632c763</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
