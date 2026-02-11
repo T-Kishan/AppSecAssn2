@@ -1,0 +1,237 @@
+﻿@model AppSecAssignment.ViewModels.RegisterViewModel
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">Fresh Farm Market Registration</h3>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Register" asp-controller="Account" method="post" enctype="multipart/form-data" id="registerForm">
+
+                        <div class="mb-3">
+                            <label asp-for="FullName" class="form-label">Full Name</label>
+                            <input asp-for="FullName" class="form-control" />
+                            <span asp-validation-for="FullName" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="CreditCardNo" class="form-label">Credit Card No</label>
+                            <input asp-for="CreditCardNo" class="form-control" placeholder="16-digit card number" />
+                            <span asp-validation-for="CreditCardNo" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Gender" class="form-label">Gender</label>
+                            <select asp-for="Gender" class="form-select">
+                                <option value="">Select Gender</option>
+                                <option value="M">Male</option>
+                                <option value="F">Female</option>
+                            </select>
+                            <span asp-validation-for="Gender" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="MobileNo" class="form-label">Mobile No</label>
+                            <input asp-for="MobileNo" class="form-control" />
+                            <span asp-validation-for="MobileNo" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="DeliveryAddress" class="form-label">Delivery Address</label>
+                            <textarea asp-for="DeliveryAddress" class="form-control" rows="2"></textarea>
+                            <span asp-validation-for="DeliveryAddress" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label">Email Address</label>
+                            <input asp-for="Email" class="form-control" type="email" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Password" class="form-label">Password</label>
+                            <input asp-for="Password" class="form-control" type="password" id="passwordInput" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                            <div class="password-strength mt-2">
+                                <div class="progress" style="height: 5px;">
+                                    <div id="passwordStrengthBar" class="progress-bar" role="progressbar" style="width: 0%"></div>
+                                </div>
+                                <small id="passwordStrengthText" class="text-muted">Password strength: <span id="strengthLabel">None</span></small>
+                            </div>
+                            <div id="passwordRequirements" class="mt-2" style="font-size: 0.875rem;">
+                                <div id="req-length" class="text-muted">✗ At least 12 characters</div>
+                                <div id="req-uppercase" class="text-muted">✗ Contains uppercase letter</div>
+                                <div id="req-lowercase" class="text-muted">✗ Contains lowercase letter</div>
+                                <div id="req-digit" class="text-muted">✗ Contains number</div>
+                                <div id="req-special" class="text-muted">✗ Contains special character</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ConfirmPassword" class="form-label">Confirm Password</label>
+                            <input asp-for="ConfirmPassword" class="form-control" type="password" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Photo" class="form-label">Photo (.JPG only)</label>
+                            <input asp-for="Photo" class="form-control" type="file" accept=".jpg" />
+                            <span asp-validation-for="Photo" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="AboutMe" class="form-label">About Me</label>
+                            <textarea asp-for="AboutMe" class="form-control" rows="3"></textarea>
+                            <span asp-validation-for="AboutMe" class="text-danger"></span>
+                        </div>
+
+                        <input type="hidden" id="recaptchaToken" name="recaptchaToken" />
+
+                        <button type="submit" class="btn btn-primary w-100">Register</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://www.google.com/recaptcha/api.js?render=@Configuration["ReCaptcha:SiteKey"]"></script>
+    <script>
+        // Password Strength Checker with Requirements
+        const passwordInput = document.getElementById('passwordInput');
+        const strengthBar = document.getElementById('passwordStrengthBar');
+        const strengthLabel = document.getElementById('strengthLabel');
+        
+        // Requirements elements
+        const reqLength = document.getElementById('req-length');
+        const reqUppercase = document.getElementById('req-uppercase');
+        const reqLowercase = document.getElementById('req-lowercase');
+        const reqDigit = document.getElementById('req-digit');
+        const reqSpecial = document.getElementById('req-special');
+        
+        passwordInput.addEventListener('input', function() {
+            const password = this.value;
+            let strength = 0;
+            let feedback = 'Weak';
+            let barColor = 'bg-danger';
+            let requirementsMet = 0;
+            
+            // Check length (minimum 12 characters)
+            if (password.length >= 12) {
+                strength += 25;
+                requirementsMet++;
+                reqLength.className = 'text-success';
+                reqLength.innerHTML = '✓ At least 12 characters';
+            } else {
+                reqLength.className = 'text-muted';
+                reqLength.innerHTML = '✗ At least 12 characters';
+            }
+            
+            if (password.length >= 16) strength += 10;
+            
+            // Check for uppercase
+            if (/[A-Z]/.test(password)) {
+                strength += 15;
+                requirementsMet++;
+                reqUppercase.className = 'text-success';
+                reqUppercase.innerHTML = '✓ Contains uppercase letter';
+            } else {
+                reqUppercase.className = 'text-muted';
+                reqUppercase.innerHTML = '✗ Contains uppercase letter';
+            }
+            
+            // Check for lowercase
+            if (/[a-z]/.test(password)) {
+                strength += 15;
+                requirementsMet++;
+                reqLowercase.className = 'text-success';
+                reqLowercase.innerHTML = '✓ Contains lowercase letter';
+            } else {
+                reqLowercase.className = 'text-muted';
+                reqLowercase.innerHTML = '✗ Contains lowercase letter';
+            }
+            
+            // Check for numbers
+            if (/\d/.test(password)) {
+                strength += 15;
+                requirementsMet++;
+                reqDigit.className = 'text-success';
+                reqDigit.innerHTML = '✓ Contains number';
+            } else {
+                reqDigit.className = 'text-muted';
+                reqDigit.innerHTML = '✗ Contains number';
+            }
+            
+            // Check for special characters
+            if (/[\$\@\!\%\*\?\&\#]/.test(password)) {
+                strength += 20;
+                requirementsMet++;
+                reqSpecial.className = 'text-success';
+                reqSpecial.innerHTML = '✓ Contains special character';
+            } else {
+                reqSpecial.className = 'text-muted';
+                reqSpecial.innerHTML = '✗ Contains special character';
+            }
+            
+            // Determine strength level
+            if (strength === 0) {
+                feedback = 'None';
+                barColor = 'bg-secondary';
+            } else if (strength < 50) {
+                feedback = 'Weak';
+                barColor = 'bg-danger';
+            } else if (strength < 75) {
+                feedback = 'Medium';
+                barColor = 'bg-warning';
+            } else if (strength < 100) {
+                feedback = 'Good';
+                barColor = 'bg-info';
+            } else {
+                feedback = 'Strong';
+                barColor = 'bg-success';
+            }
+            
+            // Update UI
+            strengthBar.style.width = strength + '%';
+            strengthBar.className = 'progress-bar ' + barColor;
+            strengthLabel.textContent = feedback;
+            strengthLabel.className = barColor.replace('bg-', 'text-');
+        });
+
+        // reCAPTCHA integration
+        let isSubmitting = false;
+        document.getElementById('registerForm').addEventListener('submit', function(event) {
+            if (isSubmitting) {
+                event.preventDefault();
+                return false;
+            }
+            
+            event.preventDefault();
+            isSubmitting = true;
+            
+            // Disable submit button
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Registering...';
+            
+            grecaptcha.ready(function() {
+                grecaptcha.execute('@Configuration["ReCaptcha:SiteKey"]', {action: 'register'}).then(function(token) {
+                    document.getElementById('recaptchaToken').value = token;
+                    event.target.submit();
+                }).catch(function(error) {
+                    isSubmitting = false;
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Register';
+                    alert('reCAPTCHA verification failed. Please try again.');
+                });
+            });
+        });
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

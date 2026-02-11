@@ -1,0 +1,67 @@
+﻿@model AppSecAssignment.ViewModels.ChangePasswordViewModel
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-warning text-dark">
+                    <h3 class="mb-0">Change Password</h3>
+                </div>
+                <div class="card-body">
+                    @if (ViewBag.Message != null)
+                    {
+                        <div class="alert alert-success">@ViewBag.Message</div>
+                    }
+
+                    <form asp-action="ChangePassword" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="CurrentPassword" class="form-label">Current Password</label>
+                            <input asp-for="CurrentPassword" class="form-control" type="password" />
+                            <span asp-validation-for="CurrentPassword" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="NewPassword" class="form-label">New Password</label>
+                            <input asp-for="NewPassword" class="form-control" type="password" id="newPasswordInput" />
+                            <span asp-validation-for="NewPassword" class="text-danger"></span>
+                            <div class="password-strength mt-2">
+                                <div class="progress" style="height: 5px;">
+                                    <div id="passwordStrengthBar" class="progress-bar" role="progressbar" style="width: 0%"></div>
+                                </div>
+                                <small id="passwordStrengthText" class="text-muted">Password strength: <span id="strengthLabel">None</span></small>
+                            </div>
+                            <small class="text-muted d-block mt-1">Min 12 chars, mixed case, numbers & special chars</small>
+                            <div id="passwordRequirements" class="mt-2" style="font-size: 0.875rem;">
+                                <div id="req-length" class="text-muted">✗ At least 12 characters</div>
+                                <div id="req-uppercase" class="text-muted">✗ Contains uppercase letter</div>
+                                <div id="req-lowercase" class="text-muted">✗ Contains lowercase letter</div>
+                                <div id="req-digit" class="text-muted">✗ Contains number</div>
+                                <div id="req-special" class="text-muted">✗ Contains special character</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ConfirmNewPassword" class="form-label">Confirm New Password</label>
+                            <input asp-for="ConfirmNewPassword" class="form-control" type="password" />
+                            <span asp-validation-for="ConfirmNewPassword" class="text-danger"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-warning w-100">Change Password</button>
+                    </form>
+
+                    <div class="mt-3 text-center">
+                        <a asp-action="Index" asp-controller="Home" class="btn btn-link">Back to Home</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

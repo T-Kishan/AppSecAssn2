@@ -1,0 +1,46 @@
+﻿using AppSecAssignment.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace AppSecAssignment.Middleware
+{
+    public class SessionValidationMiddleware
+    {
+        private readonly RequestDelegate _next;
+
+        public SessionValidationMiddleware(RequestDelegate next)
+        {
+            _next = next;
+        }
+
+        public async Task InvokeAsync(HttpContext context, AuthDbContext dbContext)
+        {
+            var userEmail = context.Session.GetString("UserEmail");
+            var sessionId = context.Session.Id;
+
+            // Skip validation for login, register, and public pages
+            var path = context.Request.Path.Value?.ToLower() ?? "";
+            if (path.Contains("/account/login") || 
+                path.Contains("/account/register") ||
+                path.Contains("/account/verifytwoFactor") ||
+                string.IsNullOrEmpty(userEmail))
+            {
+                await _next(context);
+                return;
+            }
+
+            // Check if this session is still active in database
+            var activeSession = await dbContext.UserSessions
+                .FirstOrDefaultAsync(s => s.SessionId == sessionId && s.IsActive);
+
+            if (activeSession == null)
+            {
+                // Session was terminated (multiple login detected)
+                context.Session.Clear();
+                context.Response.Redirect("/Account/Login?message=SessionExpired");
+                return;
+            }
+
+            await _next(context);
+        }
+    }
+}

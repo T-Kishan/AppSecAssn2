@@ -1,0 +1,180 @@
+﻿@model AppSecAssignment.ViewModels.ChangePasswordViewModel
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-warning text-dark">
+                    <h3 class="mb-0">Change Password</h3>
+                </div>
+                <div class="card-body">
+                    @if (ViewBag.Message != null)
+                    {
+                        <div class="alert alert-success">@ViewBag.Message</div>
+                    }
+
+                    <form asp-action="ChangePassword" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="CurrentPassword" class="form-label">Current Password</label>
+                            <input asp-for="CurrentPassword" class="form-control" type="password" />
+                            <span asp-validation-for="CurrentPassword" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="NewPassword" class="form-label">New Password</label>
+                            <input asp-for="NewPassword" class="form-control" type="password" id="newPasswordInput" />
+                            <span asp-validation-for="NewPassword" class="text-danger"></span>
+                            <div class="password-strength mt-2">
+                                <div class="progress" style="height: 5px;">
+                                    <div id="passwordStrengthBar" class="progress-bar" role="progressbar" style="width: 0%"></div>
+                                </div>
+                                <small id="passwordStrengthText" class="text-muted">Password strength: <span id="strengthLabel">None</span></small>
+                            </div>
+                            <small class="text-muted d-block mt-1">Min 12 chars, mixed case, numbers & special chars</small>
+                            <div id="passwordRequirements" class="mt-2" style="font-size: 0.875rem;">
+                                <div id="req-length" class="text-muted">✗ At least 12 characters</div>
+                                <div id="req-uppercase" class="text-muted">✗ Contains uppercase letter</div>
+                                <div id="req-lowercase" class="text-muted">✗ Contains lowercase letter</div>
+                                <div id="req-digit" class="text-muted">✗ Contains number</div>
+                                <div id="req-special" class="text-muted">✗ Contains special character</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ConfirmNewPassword" class="form-label">Confirm New Password</label>
+                            <input asp-for="ConfirmNewPassword" class="form-control" type="password" />
+                            <span asp-validation-for="ConfirmNewPassword" class="text-danger"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-warning w-100">Change Password</button>
+                    </form>
+
+                    <div class="mt-3 text-center">
+                        <a asp-action="Index" asp-controller="Home" class="btn btn-link">Back to Home</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Real-time password validation
+        const passwordInput = document.getElementById('newPasswordInput');
+        const strengthBar = document.getElementById('passwordStrengthBar');
+        const strengthLabel = document.getElementById('strengthLabel');
+        
+        // Requirements elements
+        const reqLength = document.getElementById('req-length');
+        const reqUppercase = document.getElementById('req-uppercase');
+        const reqLowercase = document.getElementById('req-lowercase');
+        const reqDigit = document.getElementById('req-digit');
+        const reqSpecial = document.getElementById('req-special');
+        
+        passwordInput.addEventListener('input', function() {
+            const password = this.value;
+            let strength = 0;
+            let feedback = 'Weak';
+            let barColor = 'bg-danger';
+            let requirementsMet = 0;
+            
+            // Check length (minimum 12 characters)
+            if (password.length >= 12) {
+                strength += 25;
+                requirementsMet++;
+                reqLength.className = 'text-success';
+                reqLength.innerHTML = '✓ At least 12 characters';
+            } else {
+                reqLength.className = 'text-muted';
+                reqLength.innerHTML = '✗ At least 12 characters';
+            }
+            
+            if (password.length >= 16) strength += 10;
+            
+            // Check for uppercase
+            if (/[A-Z]/.test(password)) {
+                strength += 15;
+                requirementsMet++;
+                reqUppercase.className = 'text-success';
+                reqUppercase.innerHTML = '✓ Contains uppercase letter';
+            } else {
+                reqUppercase.className = 'text-muted';
+                reqUppercase.innerHTML = '✗ Contains uppercase letter';
+            }
+            
+            // Check for lowercase
+            if (/[a-z]/.test(password)) {
+                strength += 15;
+                requirementsMet++;
+                reqLowercase.className = 'text-success';
+                reqLowercase.innerHTML = '✓ Contains lowercase letter';
+            } else {
+                reqLowercase.className = 'text-muted';
+                reqLowercase.innerHTML = '✗ Contains lowercase letter';
+            }
+            
+            // Check for numbers
+            if (/\d/.test(password)) {
+                strength += 15;
+                requirementsMet++;
+                reqDigit.className = 'text-success';
+                reqDigit.innerHTML = '✓ Contains number';
+            } else {
+                reqDigit.className = 'text-muted';
+                reqDigit.innerHTML = '✗ Contains number';
+            }
+            
+            // Check for special characters
+            if (/[\$\@\!\%\*\?\&\#]/.test(password)) {
+                strength += 20;
+                requirementsMet++;
+                reqSpecial.className = 'text-success';
+                reqSpecial.innerHTML = '✓ Contains special character';
+            } else {
+                reqSpecial.className = 'text-muted';
+                reqSpecial.innerHTML = '✗ Contains special character';
+            }
+            
+            // Determine strength level
+            if (strength === 0) {
+                feedback = 'None';
+                barColor = 'bg-secondary';
+            } else if (strength < 50) {
+                feedback = 'Weak';
+                barColor = 'bg-danger';
+            } else if (strength < 75) {
+                feedback = 'Medium';
+                barColor = 'bg-warning';
+            } else if (strength < 100) {
+                feedback = 'Good';
+                barColor = 'bg-info';
+            } else {
+                feedback = 'Strong';
+                barColor = 'bg-success';
+            }
+            
+            // Update strength bar
+            strengthBar.style.width = strength + '%';
+            strengthBar.className = 'progress-bar ' + barColor;
+            strengthLabel.textContent = feedback;
+            strengthLabel.className = barColor.replace('bg-', 'text-');
+            
+            // Client-side validation before submit
+            const form = passwordInput.closest('form');
+            const submitButton = form.querySelector('button[type="submit"]');
+            
+            if (requirementsMet === 5 && password.length >= 12) {
+                submitButton.disabled = false;
+            } else {
+                // Don't disable if field is empty (allow user to see validation errors)
+                if (password.length > 0 && password.length < 12) {
+                    // Optional: could disable button for incomplete passwords
+                    // submitButton.disabled = true;
+                }
+            }
+        });
+    </script>
+}

@@ -1,0 +1,25 @@
+@{
+    ViewData["Title"] = "Disable 2FA";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-warning text-dark">
+                    <h3 class="mb-0">Emergency: Disable 2FA</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="/Account/Emergency2FADisable">
+                        @Html.AntiForgeryToken()
+                        <div class="mb-3">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" name="email" class="form-control" required />
+                        </div>
+                        <button type="submit" class="btn btn-warning w-100">Disable 2FA for This Account</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

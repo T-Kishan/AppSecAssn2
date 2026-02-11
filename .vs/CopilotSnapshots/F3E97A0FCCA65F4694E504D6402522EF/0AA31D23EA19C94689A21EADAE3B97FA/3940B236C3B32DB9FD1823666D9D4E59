@@ -1,0 +1,29 @@
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
+
+namespace AppSecAssignment.Models
+{
+    public class ApplicationUser : IdentityUser
+    {
+        [Required]
+        public string FullName { get; set; }
+
+        [Required]
+        public string Gender { get; set; }
+
+        [Required]
+        public string MobileNo { get; set; }
+
+        [Required]
+        public string DeliveryAddress { get; set; }
+
+        [Required]
+        public string CreditCardNo { get; set; } // encrypted string storage
+
+        public string PhotoPath { get; set; } // jpg filename storage
+
+        public string AboutMe { get; set; } // special chars allowed
+
+        public string? AboutMeSignature { get; set; } // Stores the RSA signature
+    }
+}

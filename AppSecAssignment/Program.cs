@@ -31,6 +31,9 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 // Add reCAPTCHA Service
 builder.Services.AddHttpClient<RecaptchaService>();
 
+// Add Email Service
+builder.Services.AddTransient<IEmailService, EmailService>();
+
 // Add Session Services (Needed for Login/Logout)
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddDistributedMemoryCache(); // Saves session in memory
@@ -74,6 +77,9 @@ app.UseStaticFiles();
 
 // Important: Session must be called BEFORE Routing
 app.UseSession();
+
+// FEATURE 4.2: Multiple Login Detection - Check session validity
+app.UseMiddleware<AppSecAssignment.Middleware.SessionValidationMiddleware>();
 
 app.UseRouting();
 
